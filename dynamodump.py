@@ -741,26 +741,9 @@ def do_restore(dynamo, sleep_interval, source_table, destination_table, write_ca
                             }
                         })
 
-                logging.info("Updating " + destination_table +
+                logging.info("NOT Updating " + destination_table +
                              " global secondary indexes write capacities as necessary..")
-                while True:
-                    try:
-                        dynamo.update_table(destination_table,
-                                            global_secondary_index_updates=gsi_data)
-                        break
-                    except boto.exception.JSONResponseError as e:
-                        if (e.body["__type"] ==
-                                "com.amazonaws.dynamodb.v20120810#LimitExceededException"):
-                            logging.info(
-                                "Limit exceeded, retrying updating throughput of"
-                                "GlobalSecondaryIndexes in " + destination_table + "..")
-                            time.sleep(sleep_interval)
-                        elif (e.body["__type"] ==
-                              "com.amazon.coral.availability#ThrottlingException"):
-                            logging.info(
-                                "Control plane limit exceeded, retrying updating throughput of"
-                                "GlobalSecondaryIndexes in " + destination_table + "..")
-                            time.sleep(sleep_interval)
+                
 
         # wait for table to become active
         wait_for_active_table(dynamo, destination_table, "active")
