@@ -455,26 +455,9 @@ def update_provisioned_throughput(conn, table_name, read_capacity, write_capacit
     Update provisioned throughput on the table to provided values
     """
 
-    logging.info("Updating " + table_name + " table read capacity to: " +
+    logging.info("NOT Updating " + table_name + " table read capacity to: " +
                  str(read_capacity) + ", write capacity to: " + str(write_capacity))
-    while True:
-        try:
-            conn.update_table(table_name,
-                              {"ReadCapacityUnits": int(read_capacity),
-                               "WriteCapacityUnits": int(write_capacity)})
-            break
-        except boto.exception.JSONResponseError as e:
-            if e.body["__type"] == "com.amazonaws.dynamodb.v20120810#LimitExceededException":
-                logging.info("Limit exceeded, retrying updating throughput of " + table_name + "..")
-                time.sleep(sleep_interval)
-            elif e.body["__type"] == "com.amazon.coral.availability#ThrottlingException":
-                logging.info("Control plane limit exceeded, retrying updating throughput"
-                             "of " + table_name + "..")
-                time.sleep(sleep_interval)
-
-    # wait for provisioned throughput update completion
-    if wait:
-        wait_for_active_table(conn, table_name, "updated")
+    
 
 
 def do_empty(dynamo, table_name):
