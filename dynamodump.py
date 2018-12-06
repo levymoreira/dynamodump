@@ -455,8 +455,7 @@ def update_provisioned_throughput(conn, table_name, read_capacity, write_capacit
     Update provisioned throughput on the table to provided values
     """
 
-    logging.info("NOT Updating " + table_name + " table read capacity to: " +
-                 str(read_capacity) + ", write capacity to: " + str(write_capacity))
+    logging.info("NOT Updating capacity")
     
 
 
